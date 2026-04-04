@@ -20,6 +20,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
         }
         .product-card:hover { 
             transform: translateY(-3px); 
@@ -40,7 +41,7 @@
 <body>
 
     <section id="loginView" class="fixed inset-0 bg-orange-100 z-[100] flex items-center justify-center p-6">
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-sm text-center">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-sm text-center">
             <div class="w-20 h-20 bg-orange-400 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl">
                 <i class="fas fa-user-lock"></i>
             </div>
@@ -61,9 +62,9 @@
     <div id="sideMenu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" onclick="closeMenu()">
         <div class="bg-white w-64 h-full p-5 shadow-2xl" onclick="event.stopPropagation()">
             <h2 class="text-xl font-bold mb-6 border-b pb-4">เมนูหลัก</h2>
-            <button onclick="toggleView('shop')" class="block w-full text-left py-3 px-4 hover:bg-orange-50 rounded-xl mb-2"><i class="fas fa-store mr-3"></i> หน้าขายสินค้า</button>
+            <button onclick="toggleView('shop')" class="block w-full text-left py-3 px-4 hover:bg-orange-50 rounded-xl mb-2"><i class="fas fa-store mr-3 text-orange-500"></i> หน้าขายสินค้า</button>
             <div id="adminOnlyMenu" class="hidden">
-                <button onclick="toggleView('admin')" class="block w-full text-left py-3 px-4 hover:bg-blue-50 rounded-xl text-blue-600 mb-2 font-medium"><i class="fas fa-box mr-3"></i> จัดการสินค้า</button>
+                <button onclick="toggleView('admin')" class="block w-full text-left py-3 px-4 hover:bg-blue-50 rounded-xl text-blue-600 mb-2 font-medium"><i class="fas fa-boxes-stacked mr-3"></i> จัดการสินค้า/สต็อก</button>
                 <button onclick="toggleView('users')" class="block w-full text-left py-3 px-4 hover:bg-red-50 rounded-xl text-red-600 font-bold"><i class="fas fa-users-cog mr-3"></i> จัดการพนักงาน</button>
             </div>
         </div>
@@ -83,10 +84,10 @@
                 <button onclick="openProductModal()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-xs">+ เพิ่ม</button>
             </div>
         </div>
-        <div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div class="bg-white rounded-3xl shadow-sm overflow-hidden border">
             <table class="w-full text-left">
                 <thead class="bg-gray-50 border-b">
-                    <tr><th class="p-4">รูป</th><th class="p-4">ชื่อ</th><th class="p-4 text-right">ราคา</th><th class="p-4 text-center">จัดการ</th></tr>
+                    <tr><th class="p-4">รูป</th><th class="p-4">ชื่อ</th><th class="p-4">สต็อก</th><th class="p-4 text-right">ราคา</th><th class="p-4 text-center">จัดการ</th></tr>
                 </thead>
                 <tbody id="adminTableBody"></tbody>
             </table>
@@ -95,10 +96,10 @@
 
     <section id="usersView" class="container mx-auto px-4 pb-10 hidden text-sm">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-xl font-bold text-red-600">จัดการทีมงาน</h1>
+            <h1 class="text-xl font-bold text-red-600">จัดการพนักงาน</h1>
             <button onclick="openUserModal()" class="bg-red-500 text-white px-4 py-2 rounded-full text-xs">+ เพิ่มพนักงาน</button>
         </div>
-        <div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div class="bg-white rounded-3xl shadow-sm overflow-hidden border">
             <table class="w-full text-left">
                 <thead class="bg-gray-50 border-b">
                     <tr><th class="p-4">ชื่อ</th><th class="p-4">ตำแหน่ง</th><th class="p-4">PIN</th><th class="p-4 text-center">จัดการ</th></tr>
@@ -128,10 +129,10 @@
                     </div>
                     <div class="flex gap-2">
                         <label class="flex-1 text-center bg-white border-2 p-3 rounded-2xl cursor-pointer has-[:checked]:border-green-500 transition-all">
-                            <input type="radio" name="payType" value="cash" checked class="hidden"> <span class="text-sm font-medium">เงินสด</span>
+                            <input type="radio" name="payType" value="เงินสด" checked class="hidden"> <span class="text-sm font-medium">เงินสด</span>
                         </label>
                         <label class="flex-1 text-center bg-white border-2 p-3 rounded-2xl cursor-pointer has-[:checked]:border-green-500 transition-all">
-                            <input type="radio" name="payType" value="scan" class="hidden"> <span class="text-sm font-medium">QR PromptPay</span>
+                            <input type="radio" name="payType" value="โอนสแกน" class="hidden"> <span class="text-sm font-medium">QR PromptPay</span>
                         </label>
                     </div>
                     <button onclick="goToCheckout()" class="w-full bg-[#10b981] text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-green-600 transition-all">ชำระเงิน</button>
@@ -140,12 +141,14 @@
             <div id="qrCheckoutSection" class="hidden p-8 text-center bg-white">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png" class="h-6 mx-auto mb-4">
                 <p class="font-bold text-2xl mb-1 text-green-600" id="qrFinalTotal">0 ฿</p>
-                <p class="text-xs text-gray-400 mb-6">กรุณาสแกนเพื่อชำระเงิน</p>
                 <div class="bg-gray-100 p-4 rounded-3xl mb-8 w-48 h-48 mx-auto flex items-center justify-center border-2 border-dashed border-gray-300">
                     <img id="qrDisplayImg" src="" class="w-full h-full object-contain hidden">
                     <span id="qrNoImgMsg" class="text-[10px] text-red-400 px-4">ยังไม่ได้ตั้งค่า QR Code</span>
                 </div>
-                <button onclick="finishOrder()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition-all">เสร็จสิ้นรายการ</button>
+                <div class="flex gap-2">
+                    <button onclick="openCart()" class="flex-1 bg-gray-100 py-3 rounded-xl font-bold">กลับ</button>
+                    <button onclick="finishOrder()" class="flex-[2] bg-blue-600 text-white py-3 rounded-xl font-bold">ยืนยันรับเงิน</button>
+                </div>
             </div>
         </div>
     </div>
@@ -155,7 +158,8 @@
             <h3 class="font-bold mb-4">ข้อมูลสินค้า</h3>
             <div class="space-y-4 text-sm">
                 <input type="text" id="pName" placeholder="ชื่อสินค้า" class="w-full border p-3 rounded-xl outline-none">
-                <input type="number" id="pPrice" placeholder="ราคา (฿)" class="w-full border p-3 rounded-xl outline-none">
+                <input type="number" id="pPrice" placeholder="ราคาขาย (฿)" class="w-full border p-3 rounded-xl outline-none">
+                <input type="number" id="pStock" placeholder="จำนวนสต็อก" class="w-full border p-3 rounded-xl outline-none">
                 <input type="file" id="pImgFile" class="w-full text-xs border p-2 rounded-xl">
             </div>
             <div class="flex justify-end mt-6 gap-3 text-xs font-bold">
@@ -172,8 +176,8 @@
                 <input type="text" id="uName" placeholder="ชื่อพนักงาน" class="w-full border p-3 rounded-xl outline-none">
                 <input type="text" id="uPin" placeholder="รหัส PIN" class="w-full border p-3 rounded-xl outline-none">
                 <select id="uRole" class="w-full border p-3 rounded-xl outline-none bg-white">
-                    <option value="staff">Staff (ขายเท่านั้น)</option>
-                    <option value="admin">Admin (เจ้าของร้าน)</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
                 </select>
             </div>
             <div class="flex justify-end mt-6 gap-3 text-xs font-bold">
@@ -190,7 +194,7 @@
         let qrCodeImg = localStorage.getItem('qrCodeImg') || '';
         let currentUser = null;
         let editProdId = null;
-        let editUserPinId = null;
+        let editUserPin = null;
 
         function handleLogin() {
             const pin = document.getElementById('loginPin').value;
@@ -202,15 +206,13 @@
                 document.getElementById('userBadge').innerText = currentUser.name;
                 document.getElementById('adminOnlyMenu').classList.toggle('hidden', currentUser.role !== 'admin');
                 toggleView('shop');
-            } else {
-                alert('รหัส PIN ไม่ถูกต้อง!');
-                document.getElementById('loginPin').value = '';
-            }
+            } else { alert('PIN ไม่ถูกต้อง!'); }
         }
         function handleLogout() { location.reload(); }
 
         function openMenu() { document.getElementById('sideMenu').classList.remove('hidden'); }
         function closeMenu() { document.getElementById('sideMenu').classList.add('hidden'); }
+        
         function toggleView(view) {
             closeMenu();
             ['shopView', 'adminView', 'usersView'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -224,28 +226,34 @@
             const grid = document.getElementById('productGrid');
             grid.innerHTML = products.map(p => {
                 const qty = p.qty || 0;
+                const stock = p.stock || 0;
+                const isOut = stock <= 0;
                 return `
-                <div class="product-card">
+                <div class="product-card ${isOut ? 'opacity-60 grayscale' : ''}">
                     <img src="${p.img || 'https://via.placeholder.com/150'}">
+                    ${isOut ? '<div class="absolute top-2 left-2 bg-red-600 text-white text-[8px] px-2 py-1 rounded-full font-bold">หมด</div>' : ''}
                     <div class="flex justify-between items-end">
                         <div class="flex-1 truncate pr-2">
                             <p class="text-[10px] text-gray-400 truncate">${p.name}</p>
+                            <p class="text-[9px] font-bold ${stock < 5 ? 'text-red-500' : 'text-blue-500'}">สต็อก: ${stock}</p>
                             <p class="text-sm font-bold text-gray-900">${p.price} ฿</p>
                         </div>
                         <div class="flex items-center gap-1">
                             <button onclick="updateQty(${p.id}, -1)" class="bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center ${qty === 0 ? 'hidden' : ''}"><i class="fas fa-minus text-[8px]"></i></button>
                             <span class="text-green-600 font-bold text-xs ${qty === 0 ? 'hidden' : ''}">${qty}</span>
-                            <button onclick="updateQty(${p.id}, 1)" class="bg-[#10b981] text-white w-7 h-7 rounded-full flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button>
+                            <button onclick="updateQty(${p.id}, 1)" ${isOut ? 'disabled' : ''} class="bg-[#10b981] text-white w-7 h-7 rounded-full flex items-center justify-center shadow-md"><i class="fas fa-plus text-[10px]"></i></button>
                         </div>
                     </div>
                 </div>`;
-            }).join('');
+            }).join('') || '<p class="col-span-full text-center py-20 text-gray-400">ยังไม่มีสินค้า</p>';
             updateCartBadge();
         }
 
         function updateQty(id, change) {
             const idx = products.findIndex(p => p.id === id);
             if(idx > -1) {
+                const p = products[idx];
+                if (change > 0 && (p.qty || 0) >= p.stock) return alert('สินค้าในสต็อกไม่พอ!');
                 products[idx].qty = Math.max(0, (products[idx].qty || 0) + change);
                 localStorage.setItem('myProducts', JSON.stringify(products));
                 renderShop();
@@ -276,11 +284,14 @@
                 return `
                 <div class="flex items-center gap-3 bg-white p-3 rounded-2xl border">
                     <img src="${p.img}" class="w-10 h-10 object-cover rounded-lg">
-                    <div class="flex-1 text-xs font-bold text-gray-700">${p.name}</div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="updateQty(${p.id}, -1)" class="text-red-400 text-lg"><i class="fas fa-minus-circle"></i></button>
-                        <span class="text-sm font-bold">${p.qty}</span>
-                        <button onclick="updateQty(${p.id}, 1)" class="text-green-500 text-lg"><i class="fas fa-plus-circle"></i></button>
+                    <div class="flex-1">
+                        <p class="text-xs font-bold text-gray-700 truncate">${p.name}</p>
+                        <p class="text-[10px] text-gray-400">${p.price} ฿ / ชิ้น</p>
+                    </div>
+                    <div class="flex items-center gap-3 bg-gray-50 px-2 py-1 rounded-xl">
+                        <button onclick="updateQty(${p.id}, -1)" class="text-red-500"><i class="fas fa-minus-circle"></i></button>
+                        <span class="text-sm font-bold w-4 text-center">${p.qty}</span>
+                        <button onclick="updateQty(${p.id}, 1)" class="text-green-500"><i class="fas fa-plus-circle"></i></button>
                     </div>
                 </div>`;
             }).join('') || '<p class="text-center text-gray-400">ว่างเปล่า</p>';
@@ -289,9 +300,9 @@
 
         function goToCheckout() {
             const total = products.reduce((sum, p) => sum + (p.price * (p.qty || 0)), 0);
-            if(total === 0) return alert('กรุณาเลือกสินค้า');
+            if(total === 0) return;
             const type = document.querySelector('input[name="payType"]:checked').value;
-            if(type === 'scan') {
+            if(type === 'โอนสแกน') {
                 document.getElementById('cartSummarySection').classList.add('hidden');
                 document.getElementById('qrCheckoutSection').classList.remove('hidden');
                 document.getElementById('qrFinalTotal').innerText = `${total} ฿`;
@@ -299,44 +310,42 @@
                     document.getElementById('qrDisplayImg').src = qrCodeImg;
                     document.getElementById('qrDisplayImg').classList.remove('hidden');
                     document.getElementById('qrNoImgMsg').classList.add('hidden');
-                } else {
-                    document.getElementById('qrDisplayImg').classList.add('hidden');
-                    document.getElementById('qrNoImgMsg').classList.remove('hidden');
                 }
-            } else { alert('รับเงินสดเรียบร้อย (โดย: ' + currentUser.name + ')'); finishOrder(); }
+            } else { finishOrder(); }
         }
-                  async function finishOrder() {
-            const totalQty = products.reduce((sum, p) => sum + (p.qty || 0), 0);
-            const totalPrice = products.reduce((sum, p) => sum + (p.price * (p.qty || 0)), 0);
-            const items = products.filter(p => p.qty > 0).map(p => `${p.name} (${p.qty})`).join(', ');
+
+        async function finishOrder() {
+            const cartItems = products.filter(p => p.qty > 0);
+            const items = cartItems.map(p => `${p.name} (${p.qty})`).join(', ');
+            const totalQty = cartItems.reduce((sum, p) => sum + p.qty, 0);
+            const totalPrice = cartItems.reduce((sum, p) => sum + (p.price * p.qty), 0);
             const payType = document.querySelector('input[name="payType"]:checked').value;
-            const seller = currentUser ? currentUser.name : "ไม่ระบุ";
+            const seller = currentUser.name;
+
+            // ตัดสต็อก
+            products.forEach(p => {
+                if(p.qty > 0) {
+                    p.stock = (p.stock || 0) - p.qty;
+                    p.qty = 0;
+                }
+            });
 
             const scriptURL = 'https://script.google.com/macros/s/AKfycbyrGByVuIKKh4W7ZLaqpYvD-c9g7D32Ztk6PQknP5SZiUZ50bq0E2zFW8H0laNyI6vBKw/exec';
+            try { fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ items, totalQty, totalPrice, payType, seller }) }); } catch (e) {}
 
-            try {
-                fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ items, totalQty, totalPrice, payType, seller })
-                });
-            } catch (e) {
-                console.error('Error!', e.message);
-            }
-
-            products.forEach(p => p.qty = 0);
             localStorage.setItem('myProducts', JSON.stringify(products));
             closeCart();
             renderShop();
-            alert('ทำรายการเสร็จสิ้น และบันทึกลง Google Sheets แล้ว!');
+            alert('ทำรายการเรียบร้อย!');
         }
 
+        // --- Admin Functions ---
         function renderAdmin() {
-            const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = products.map(p => `
+            document.getElementById('adminTableBody').innerHTML = products.map(p => `
                 <tr class="border-b">
                     <td class="p-4"><img src="${p.img}" class="w-10 h-10 rounded"></td>
                     <td class="p-4 font-bold text-gray-600 text-xs">${p.name}</td>
+                    <td class="p-4 font-bold ${p.stock < 5 ? 'text-red-500' : 'text-blue-500'}">${p.stock || 0}</td>
                     <td class="p-4 text-right font-bold">${p.price}฿</td>
                     <td class="p-4 text-center space-x-2">
                         <button onclick="editProduct(${p.id})" class="text-blue-500"><i class="fas fa-edit"></i></button>
@@ -345,88 +354,73 @@
                 </tr>`).join('');
         }
 
-        function openProductModal() { editProdId = null; document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('productModal').classList.remove('hidden'); }
+        function openProductModal() { editProdId = null; document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('pStock').value = ''; document.getElementById('productModal').classList.remove('hidden'); }
         function closeProductModal() { document.getElementById('productModal').classList.add('hidden'); }
 
         document.getElementById('saveProdBtn').onclick = async () => {
-            const name = document.getElementById('pName').value;
-            const price = document.getElementById('pPrice').value;
-            const file = document.getElementById('pImgFile').files[0];
+            const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value, stock = parseInt(document.getElementById('pStock').value) || 0, file = document.getElementById('pImgFile').files[0];
             if(!name || !price) return;
-
             let imgUrl = editProdId ? products.find(p => p.id === editProdId).img : 'https://via.placeholder.com/150';
             if(file) imgUrl = await toBase64(file);
-
             if(editProdId) {
                 const i = products.findIndex(p => p.id === editProdId);
-                products[i] = {...products[i], name, price, img: imgUrl};
-            } else {
-                products.push({ id: Date.now(), name, price, img: imgUrl, qty: 0 });
-            }
+                products[i] = {...products[i], name, price, stock, img: imgUrl};
+            } else { products.push({ id: Date.now(), name, price, stock, img: imgUrl, qty: 0 }); }
             localStorage.setItem('myProducts', JSON.stringify(products));
             closeProductModal();
             renderAdmin();
         };
 
         function editProduct(id) { 
-            editProdId = id; 
-            const p = products.find(i => i.id === id); 
-            document.getElementById('pName').value = p.name; 
-            document.getElementById('pPrice').value = p.price; 
+            editProdId = id; const p = products.find(i => i.id === id); 
+            document.getElementById('pName').value = p.name; document.getElementById('pPrice').value = p.price; document.getElementById('pStock').value = p.stock || 0; 
             document.getElementById('productModal').classList.remove('hidden'); 
         }
+        function deleteProduct(id) { if(confirm('ลบสินค้านี้?')) { products = products.filter(p => p.id !== id); localStorage.setItem('myProducts', JSON.stringify(products)); renderAdmin(); } }
 
-        function deleteProduct(id) { 
-            if(confirm('ยืนยันการลบสินค้า?')) { 
-                products = products.filter(p => p.id !== id); 
-                localStorage.setItem('myProducts', JSON.stringify(products)); 
-                renderAdmin(); 
-            } 
-        }
-
-        document.getElementById('qrInput').onchange = async (e) => { 
-            const file = e.target.files[0]; 
-            if(file) { 
-                qrCodeImg = await toBase64(file); 
-                localStorage.setItem('qrCodeImg', qrCodeImg); 
-                alert('บันทึก QR Code เรียบร้อย'); 
-            } 
-        };
-
+        // --- User Functions (Updated with Edit) ---
         function renderUserTable() {
-            const tbody = document.getElementById('userTableBody');
-            tbody.innerHTML = Object.keys(appUsers).map(pin => `
+            document.getElementById('userTableBody').innerHTML = Object.keys(appUsers).map(pin => `
                 <tr class="border-b">
                     <td class="p-4 font-bold text-gray-700 text-xs">${appUsers[pin].name}</td>
-                    <td class="p-4"><span class="text-[8px] uppercase px-2 py-1 bg-gray-100 rounded-full">${appUsers[pin].role}</span></td>
-                    <td class="p-4 text-xs font-mono text-gray-400">${pin}</td>
-                    <td class="p-4 text-center">
-                        <button onclick="editUser('${pin}')" class="text-blue-500 mr-2"><i class="fas fa-edit"></i></button>
+                    <td class="p-4 uppercase text-[8px]">${appUsers[pin].role}</td>
+                    <td class="p-4 text-xs text-gray-400 font-mono">${pin}</td>
+                    <td class="p-4 text-center space-x-2">
+                        <button onclick="editUser('${pin}')" class="text-blue-500"><i class="fas fa-edit"></i></button>
                         <button onclick="deleteUser('${pin}')" class="text-red-400 ${pin === currentUser.pin ? 'hidden' : ''}"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>`).join('');
         }
 
-        function openUserModal() { editUserPinId = null; document.getElementById('uName').value = ''; document.getElementById('uPin').value = ''; document.getElementById('uRole').value = 'staff'; document.getElementById('userModal').classList.remove('hidden'); }
+        function openUserModal() { editUserPin = null; document.getElementById('uName').value = ''; document.getElementById('uPin').value = ''; document.getElementById('uRole').value = 'staff'; document.getElementById('userModal').classList.remove('hidden'); }
         function closeUserModal() { document.getElementById('userModal').classList.add('hidden'); }
 
         document.getElementById('saveUserBtn').onclick = () => {
             const n = document.getElementById('uName').value, p = document.getElementById('uPin').value, r = document.getElementById('uRole').value;
             if(!n || !p) return;
-            if(editUserPinId && editUserPinId !== p) delete appUsers[editUserPinId];
+            if(editUserPin && editUserPin !== p) delete appUsers[editUserPin]; // เปลี่ยน PIN
             appUsers[p] = { name: n, role: r };
             localStorage.setItem('appUsers', JSON.stringify(appUsers));
             closeUserModal();
             renderUserTable();
         };
 
-        function editUser(p) { editUserPinId = p; document.getElementById('uName').value = appUsers[p].name; document.getElementById('uPin').value = p; document.getElementById('uRole').value = appUsers[p].role; document.getElementById('userModal').classList.remove('hidden'); }
+        function editUser(pin) {
+            editUserPin = pin;
+            document.getElementById('uName').value = appUsers[pin].name;
+            document.getElementById('uPin').value = pin;
+            document.getElementById('uRole').value = appUsers[pin].role;
+            document.getElementById('userModal').classList.remove('hidden');
+        }
         function deleteUser(p) { delete appUsers[p]; localStorage.setItem('appUsers', JSON.stringify(appUsers)); renderUserTable(); }
+
+        document.getElementById('qrInput').onchange = async (e) => { 
+            const file = e.target.files[0]; if(file) { qrCodeImg = await toBase64(file); localStorage.setItem('qrCodeImg', qrCodeImg); alert('บันทึก QR แล้ว'); } 
+        };
 
         const toBase64 = file => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result); r.onerror = e => rej(e); });
 
-        updateCartBadge();
+        renderShop();
     </script>
 </body>
 </html>
-      
