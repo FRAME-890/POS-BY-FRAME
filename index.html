@@ -303,7 +303,7 @@
                     document.getElementById('qrDisplayImg').classList.add('hidden');
                     document.getElementById('qrNoImgMsg').classList.remove('hidden');
                 }
-            } else { alert('รับเงินสดเรียบร้อย (โดย: ' + currentUser.name + ')'); finishOrder(https://script.google.com/macros/s/AKfycbyrGByVuIKKh4W7ZLaqpYvD-c9g7D32Ztk6PQknP5SZiUZ50bq0E2zFW8H0laNyI6vBKw/exec); }
+            } else { alert('รับเงินสดเรียบร้อย (โดย: ' + currentUser.name + ')'); finishOrder(); }
         }
                   async function finishOrder() {
             const totalQty = products.reduce((sum, p) => sum + (p.qty || 0), 0);
