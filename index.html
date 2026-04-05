@@ -189,7 +189,13 @@
 
     <script>
         const initialUsers = { "9999": { name: "คุณเฟรม", role: "admin" } };
-        let appUsers = JSON.parse(localStorage.getItem('appUsers')) || initialUsers;
+let storedUsers = JSON.parse(localStorage.getItem('appUsers'));
+if (!storedUsers || Object.keys(storedUsers).length === 0) {
+    localStorage.setItem('appUsers', JSON.stringify(initialUsers));
+    storedUsers = initialUsers;
+}
+let appUsers = storedUsers;
+
         let products = JSON.parse(localStorage.getItem('myProducts')) || [];
         let qrCodeImg = localStorage.getItem('qrCodeImg') || '';
         let currentUser = null;
