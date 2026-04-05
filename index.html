@@ -274,11 +274,11 @@
                 <div class="product-card bg-card ${p.stock <= 0 ? 'opacity-50 pointer-events-none' : ''}" onclick="updateQty(${p.id}, 1)">
                     <img src="${p.img || 'https://via.placeholder.com/150'}">
                     <div class="mt-3">
-                        <p class="text-sm font-bold truncate text-gray-800 dark:text-white">${p.name}</p>
-                        <p class="text-xs ${p.stock < 5 ? 'text-red-500' : 'text-gray-400'} font-medium mt-1">คลัง: ${p.stock}</p>
+                        <p class="text-sm font-bold truncate text-black dark:text-white">${p.name}</p>
+                        <p class="text-xs text-gray-400 font-medium mt-1">คลัง: ${p.stock}</p>
                     </div>
                     <div class="flex justify-between items-center mt-2">
-                        <p class="text-lg font-bold text-black dark:text-white">${p.price}฿</p>
+                        <p class="text-lg font-bold text-[#10b981]">${p.price}฿</p>
                         <div class="flex items-center gap-2" onclick="event.stopPropagation()">
                             ${p.qty > 0 ? `
                                 <button onclick="updateQty(${p.id}, -1)" class="w-8 h-8 bg-red-100 text-red-500 rounded-full active:scale-90 transition-all">
