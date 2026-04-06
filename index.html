@@ -10,80 +10,68 @@
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap');
         body { font-family: 'Kanit', sans-serif; transition: background-color 0.3s, color 0.3s; }
         
-        body.light-mode { background-color: #f0fdf4; color: #1f2937; }
-        body.dark-mode { background-color: #121212; color: #f9fafb; }
+        body.light-mode { background-color: #f0fdf4 !important; color: #1f2937 !important; }
+        body.dark-mode { background-color: #121212 !important; color: #f9fafb !important; }
         
-        /* หน้า Login ล็อคสีเดิม */
-        #loginView { background-color: #f0fdf4 !important; color: #1f2937 !important; }
-        #loginCard { background-color: white !important; color: #1f2937 !important; }
-        #loginPin { background-color: white !important; color: #1f2937 !important; border: 2px solid #f0fdf4 !important; }
-
         .bg-card { background-color: white; }
-        body.dark-mode .bg-card { background-color: #1e1e1e; border: 1px solid #333; }
+        body.dark-mode .bg-card { background-color: #1e1e1e !important; border: 1px solid #333 !important; }
         
         .product-card { 
             aspect-ratio: 1 / 1; border-radius: 1.5rem; transition: all 0.3s; padding: 1rem;
             display: flex; flex-direction: column; justify-content: space-between; border: 2px solid transparent;
-            cursor: pointer;
+            cursor: pointer; position: relative;
         }
+        .product-card:hover { transform: translateY(-5px); border-color: #10b981; }
         .product-card img { border-radius: 1rem; width: 100%; aspect-ratio: 1/1; object-fit: cover; pointer-events: none; }
         
-        .hidden { display: none !important; }
-        #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: flex; align-items: center; justify-content: center; }
-        
-        .status-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; }
-        .status-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
+        .pay-option div { border: 1px solid #e5e7eb; background-color: #ffffff !important; transition: all 0.2s; }
+        .pay-option div i, .pay-option div span { color: #374151 !important; }
+        .pay-option input:checked + div { border-color: #10b981 !important; background-color: #ecfdf5 !important; }
+        .pay-option input:checked + div i, .pay-option input:checked + div span { color: #10b981 !important; }
 
-        .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .promo-list-item { background-color: #ffffff !important; border: 1px solid #e5e7eb; padding: 1.25rem; border-radius: 1.5rem; }
+        .promo-list-item p { color: #374151 !important; }
+
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #10b981; }
-        input:checked + .slider:before { transform: translateX(26px); }
-        .spin-animation { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .hidden { display: none !important; }
+        #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="light-mode">
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.replace('light-mode', 'dark-mode');
-        }
-    </script>
+    <script>if (localStorage.getItem('theme') === 'dark') document.body.classList.replace('light-mode', 'dark-mode');</script>
 
     <div id="loader" class="hidden"><div class="animate-spin rounded-full h-16 w-16 border-t-4 border-[#10b981]"></div></div>
 
-    <section id="loginView" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
-        <div id="loginCard" class="p-8 rounded-[3rem] shadow-2xl w-full max-w-sm text-center">
-            <div class="w-24 h-24 bg-[#10b981] rounded-full flex items-center justify-center mx-auto mb-6 text-white text-4xl shadow-lg">
-                <i class="fas fa-store"></i>
+    <nav id="mainNav" class="p-4 flex justify-between items-center hidden">
+        <div class="flex items-center gap-2">
+            <div id="userBox" class="bg-white px-4 py-2 rounded-full shadow-sm border flex items-center gap-3 dark:bg-[#1e1e1e] dark:border-[#333]">
+                <button onclick="openAdminSettings()" class="flex items-center gap-2 hover:opacity-70 transition-all">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span id="userBadge" class="text-sm font-bold text-gray-700 dark:text-white">User</span>
+                </button>
+                <div class="flex items-center gap-2 border-l pl-2 dark:border-gray-700">
+                    <button onclick="toggleDarkMode()" class="text-gray-400 hover:text-yellow-500"><i class="fas fa-moon text-xs"></i></button>
+                    <button onclick="initApp()" class="text-gray-400 hover:text-[#10b981] ml-1"><i class="fas fa-sync-alt text-xs"></i></button>
+                </div>
             </div>
-            <h2 class="text-2xl font-bold mb-2">เข้าสู่ระบบ</h2>
-            <p class="text-gray-400 text-sm mb-4">กรุณากรอกรหัส PIN</p>
-            <input type="tel" id="loginPin" placeholder="••••••" maxlength="6" style="-webkit-text-security: disc;"
-                   class="w-full p-4 rounded-2xl text-center text-3xl tracking-[0.5em] outline-none focus:border-[#10b981] mb-4">
+        </div>
+        <button onclick="handleLogout()" class="bg-white dark:bg-[#1e1e1e] px-4 py-2 rounded-full shadow-sm border dark:border-[#333] text-red-400 text-sm font-bold">ออกจากระบบ</button>
+    </nav>
+
+    <section id="loginView" class="fixed inset-0 bg-green-50 dark:bg-[#0f172a] z-[100] flex items-center justify-center p-6">
+        <div class="bg-white dark:bg-[#1e1e1e] p-8 rounded-[3rem] shadow-2xl w-full max-w-sm text-center border dark:border-[#333]">
+            <div class="w-24 h-24 bg-[#10b981] rounded-full flex items-center justify-center mx-auto mb-6 text-white text-4xl shadow-lg"><i class="fas fa-store"></i></div>
+            <h2 class="text-2xl font-bold mb-2 text-gray-800 dark:text-white">เข้าสู่ระบบ</h2>
+            <input type="tel" id="loginPin" placeholder="••••••" maxlength="6" style="-webkit-text-security: disc;" class="w-full border-2 border-green-50 dark:border-[#333] p-4 rounded-2xl text-center text-3xl tracking-[0.5em] outline-none focus:border-[#10b981] mb-4 text-gray-800 dark:bg-[#121212] dark:text-white">
             <button onclick="handleLogin()" class="w-full bg-[#10b981] text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-all">เข้าสู่ระบบ</button>
         </div>
     </section>
-
-    <nav id="mainNav" class="p-4 flex justify-between items-center hidden">
-        <div id="userBox" class="bg-white px-5 py-2.5 rounded-full shadow-sm border flex items-center gap-3 dark:bg-[#1e1e1e] dark:border-[#333]">
-            <button onclick="openAdminSettings()" class="flex items-center gap-2">
-                <span class="status-dot status-pulse"></span>
-                <span id="userBadge" class="text-sm font-bold text-gray-700 dark:text-white">User</span>
-            </button>
-            <div class="flex items-center gap-2 border-l pl-3 dark:border-[#444]">
-                <button onclick="toggleDarkMode()" id="themeBtn" class="text-gray-400 hover:text-yellow-500"><i class="fas fa-moon text-xs"></i></button>
-                <button onclick="refreshStockData(this)" class="text-gray-400 hover:text-[#10b981] ml-1"><i class="fas fa-sync-alt text-xs"></i></button>
-            </div>
-        </div>
-        <button onclick="handleLogout()" class="text-red-400 text-xs font-bold bg-white px-4 py-2 rounded-full border shadow-sm dark:bg-[#1e1e1e] dark:border-[#333]">ออกจากระบบ</button>
-    </nav>
 
     <section id="shopView" class="container mx-auto px-4 pb-24 hidden">
         <h1 class="text-2xl font-bold mb-6 mt-4 dark:text-white">รายการสินค้า</h1>
@@ -92,116 +80,104 @@
 
     <section id="adminSettingsView" class="container mx-auto px-4 pb-24 hidden">
         <div class="flex items-center gap-4 mb-8 mt-4">
-            <button onclick="toggleView('shop')" class="text-2xl text-gray-400"><i class="fas fa-arrow-left"></i></button>
-            <h1 class="text-2xl font-bold dark:text-white">ตั้งค่า</h1>
+            <button onclick="toggleView('shop')" class="text-2xl text-gray-400 p-2 hover:text-gray-600"><i class="fas fa-arrow-left"></i></button>
+            <h1 class="text-2xl font-bold dark:text-white">โปรโมชั่นปัจจุบัน</h1>
         </div>
-        <div class="bg-card p-8 rounded-[2.5rem] shadow-sm border dark:border-[#333]">
-            <h3 class="text-lg font-bold mb-6 dark:text-white">โปรโมชั่นดินสอพอง</h3>
-            <div class="flex items-center justify-between p-5 bg-green-50 dark:bg-green-900/20 rounded-3xl">
-                <div>
-                    <p class="font-bold text-green-700 dark:text-green-400">ซื้อ 3 ลด 10฿</p>
-                    <p class="text-xs text-green-600/70">ระบบจะหักส่วนลดอัตโนมัติในตะกร้า</p>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="promoToggle" onchange="updatePromoState()">
-                    <span class="slider"></span>
-                </label>
-            </div>
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl mb-6 border border-blue-100 dark:border-blue-800">
+            <p class="text-sm text-blue-600 dark:text-blue-300 flex items-center gap-2">
+                <i class="fas fa-info-circle"></i> แก้ไขหรือเพิ่มโปรโมชั่นได้ที่ Google Sheets เท่านั้น
+            </p>
         </div>
+        <div id="displayPromoList" class="space-y-4"></div>
     </section>
 
-    <button id="cartFloatBtn" onclick="openCart()" class="fixed bottom-8 right-8 bg-[#10b981] text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hidden active:scale-90 transition-all">
+    <button id="cartFloatBtn" onclick="openCart()" class="fixed bottom-8 right-8 bg-[#10b981] text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 hidden hover:scale-110 active:scale-90 transition-all">
         <i class="fas fa-shopping-basket"></i>
         <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-white font-bold">0</span>
     </button>
 
     <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-60 z-[110] hidden flex items-end sm:items-center justify-center">
-        <div class="bg-white dark:bg-[#1e1e1e] w-full max-w-md rounded-t-[3rem] sm:rounded-[3rem] overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
+        <div class="bg-white dark:bg-[#1e1e1e] w-full max-w-md rounded-t-[3rem] sm:rounded-[3rem] overflow-hidden flex flex-col max-h-[90vh]">
             <div id="cartSummarySection">
-                <div class="p-8 border-b dark:border-[#333] flex justify-between items-center">
+                <div class="p-8 border-b flex justify-between items-center dark:border-[#333]">
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-white">ตะกร้าสินค้า</h3>
-                    <button onclick="closeCart()" class="text-gray-300 hover:text-red-500 transition-colors text-4xl">&times;</button>
+                    <button onclick="closeCart()" class="text-gray-300 text-4xl p-2">&times;</button>
                 </div>
-                
                 <div id="cartItemsList" class="p-6 space-y-4 overflow-y-auto max-h-[40vh]"></div>
-
-                <div class="p-8 bg-gray-50 dark:bg-[#252525] border-t dark:border-[#333] space-y-6">
+                
+                <div class="p-8 bg-gray-50 dark:bg-[#252525] space-y-4 border-t dark:border-[#333]">
                     <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 mb-1">ยอดรวมทั้งหมด</p>
-                            <span id="displayTotal" class="text-[#10b981] text-4xl font-bold">0 ฿</span>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">ยอดรวมสุทธิ</span>
+                            <span id="discountLabel" class="text-[10px] font-bold text-red-500"></span>
+                            <span id="displayTotal" class="text-[#10b981] text-3xl font-bold leading-tight">0 ฿</span>
                         </div>
-                        <button onclick="clearCart()" class="text-red-400 bg-red-50 dark:bg-red-900/20 p-4 rounded-2xl hover:bg-red-500 hover:text-white transition-all">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <button onclick="clearCart()" class="w-12 h-12 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-trash-alt"></i></button>
                     </div>
-
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="bg-white dark:bg-[#333] border-2 dark:border-[#444] p-4 rounded-2xl text-center cursor-pointer text-gray-700 dark:text-gray-300 has-[:checked]:border-green-500 has-[:checked]:text-[#10b981] transition-all">
+                        <label class="pay-option cursor-pointer">
                             <input type="radio" name="payType" value="เงินสด" checked class="hidden">
-                            <i class="fas fa-money-bill-wave block mb-1"></i>
-                            <span class="text-xs font-bold">เงินสด</span>
+                            <div class="text-center p-4 rounded-2xl transition-all border-2"><i class="fas fa-money-bill-wave mb-1 block text-xl"></i><span class="text-xs font-bold">เงินสด</span></div>
                         </label>
-                        <label class="bg-white dark:bg-[#333] border-2 dark:border-[#444] p-4 rounded-2xl text-center cursor-pointer text-gray-700 dark:text-gray-300 has-[:checked]:border-green-500 has-[:checked]:text-[#10b981] transition-all">
+                        <label class="pay-option cursor-pointer">
                             <input type="radio" name="payType" value="สแกนจ่าย" class="hidden">
-                            <i class="fas fa-qrcode block mb-1"></i>
-                            <span class="text-xs font-bold">สแกนจ่าย</span>
+                            <div class="text-center p-4 rounded-2xl transition-all border-2"><i class="fas fa-qrcode mb-1 block text-xl"></i><span class="text-xs font-bold">สแกนจ่าย</span></div>
                         </label>
                     </div>
-                    <button onclick="goToCheckout()" class="w-full bg-[#10b981] text-white py-5 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-all">ชำระเงิน</button>
+                    <button onclick="goToCheckout()" class="w-full bg-[#10b981] text-white py-5 rounded-[1.5rem] font-bold text-lg shadow-lg">ชำระเงิน</button>
                 </div>
             </div>
-
+            
             <div id="qrCheckoutSection" class="hidden p-8 text-center bg-white dark:bg-[#1e1e1e]">
-                <p id="qrFinalTotal" class="text-4xl font-bold text-green-600 mb-6">0 ฿</p>
-                <div class="bg-white p-4 rounded-3xl mb-8 w-64 h-64 mx-auto border-4 border-green-50 flex items-center justify-center">
-                    <img id="qrDisplayImg" src="" class="w-full h-full object-contain hidden">
-                    <span id="qrLoader" class="text-gray-400">สร้าง QR Code...</span>
-                </div>
+                <p class="text-sm font-bold text-gray-400 uppercase mb-1">ยอดรวมที่ต้องชำระ</p>
+                <p class="font-bold text-4xl mb-6 text-green-600" id="qrFinalTotal">0 ฿</p>
+                <div class="bg-white p-4 rounded-3xl mb-8 w-64 h-64 mx-auto border flex items-center justify-center"><img id="qrDisplayImg" src="" class="w-full h-full object-contain"></div>
                 <div class="flex gap-3">
-                    <button onclick="backToCartSummary()" class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white py-4 rounded-2xl font-bold">กลับ</button>
-                    <button onclick="finishOrder()" class="flex-[2] bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg">เสร็จสิ้น</button>
+                    <button onclick="backToCartSummary()" class="flex-1 bg-gray-200 dark:bg-gray-700 dark:text-white py-4 rounded-2xl font-bold">กลับ</button>
+                    <button onclick="finishOrder()" class="flex-[2] bg-blue-600 text-white py-4 rounded-2xl font-bold">เสร็จสิ้น</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6NViuHChvvdQZAKV5j84QDCfepFO2RyPzejjCB5f7H1ZBGN2qPj0Nor7bgRxNH0dN/exec";";
-        const PP_ID = "0953456962";
-        let products = [];
-        let currentUser = null;
-        let isPromoActive = false;
-
-        function toggleDarkMode() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            document.body.classList.toggle('light-mode', !isDark);
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            const btn = document.getElementById('themeBtn').querySelector('i');
-            btn.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
-        }
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5zqbrv3zLd3-Yc4Ebm1b8LkeRbhn4PXfukZ0TpD8hTfmtVkWzm8pIAmfOQFF9xFYDNw/exec";
+        const PROMPTPAY_ID = "0953456962";
+        let products = [], promotionList = [], currentUser = null;
 
         async function initApp() {
             showLoading(true);
-            isPromoActive = localStorage.getItem('promo_clay') === 'true';
-            document.getElementById('promoToggle').checked = isPromoActive;
-
             const savedUser = localStorage.getItem('pos_user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 document.getElementById('loginView').classList.add('hidden');
                 document.getElementById('mainNav').classList.remove('hidden');
-                document.getElementById('shopView').classList.remove('hidden');
                 document.getElementById('userBadge').innerText = currentUser.name;
+                document.getElementById('shopView').classList.remove('hidden');
             }
             try {
                 const resp = await fetch(`${SCRIPT_URL}?action=getInitialData`);
                 const data = await resp.json();
-                products = data.products.map((p, i) => ({
-                    id: i, name: p[0], price: p[1], stock: p[2], img: p[3], qty: 0
-                }));
+                products = data.products.map((p, i) => ({ id: i, name: p[0], price: p[1], stock: p[2], img: p[3], qty: 0 }));
+                promotionList = data.promotions || [];
                 renderShop();
+                if(!document.getElementById('adminSettingsView').classList.contains('hidden')) renderAdminPromoList();
             } catch (err) { console.error(err); }
+            showLoading(false);
+        }
+
+        async function handleLogin() {
+            const pin = document.getElementById('loginPin').value;
+            showLoading(true);
+            try {
+                const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'login', pin: pin }) });
+                const result = await resp.json();
+                if (result.success) {
+                    const userData = { name: result.name, role: String(result.role).toLowerCase() };
+                    localStorage.setItem('pos_user', JSON.stringify(userData));
+                    location.reload();
+                } else alert("PIN ไม่ถูกต้อง");
+            } catch (e) { alert("เชื่อมต่อล้มเหลว"); }
             showLoading(false);
         }
 
@@ -210,22 +186,31 @@
             grid.innerHTML = products.map(p => `
                 <div class="product-card bg-card ${p.stock <= 0 ? 'opacity-50 pointer-events-none' : ''}" onclick="updateQty(${p.id}, 1)">
                     <img src="${p.img || 'https://via.placeholder.com/150'}">
-                    <div class="mt-3">
-                        <p class="text-sm font-bold truncate dark:text-white">${p.name}</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500">สต็อก: ${p.stock}</p>
-                    </div>
+                    <div class="mt-3"><p class="text-sm font-bold truncate dark:text-white">${p.name}</p><p class="text-xs text-gray-400 font-medium">คลัง: ${p.stock}</p></div>
                     <div class="flex justify-between items-center mt-2">
                         <p class="text-lg font-bold text-[#10b981]">${p.price}฿</p>
                         <div class="flex items-center gap-2" onclick="event.stopPropagation()">
-                            ${p.qty > 0 ? `
-                                <button onclick="updateQty(${p.id}, -1)" class="w-8 h-8 bg-red-100 text-red-500 rounded-full flex items-center justify-center"><i class="fas fa-minus text-[10px]"></i></button>
-                                <span class="font-bold text-sm dark:text-white">${p.qty}</span>
-                            ` : ''}
-                            <button onclick="updateQty(${p.id}, 1)" class="w-9 h-9 bg-[#10b981] text-white rounded-full flex items-center justify-center shadow-md"><i class="fas fa-plus text-xs"></i></button>
+                            ${p.qty > 0 ? `<button onclick="updateQty(${p.id}, -1)" class="w-8 h-8 bg-red-100 text-red-500 rounded-full flex items-center justify-center"><i class="fas fa-minus text-xs"></i></button><span class="font-bold text-sm dark:text-white">${p.qty}</span>` : ''}
+                            <button onclick="updateQty(${p.id}, 1)" class="w-8 h-8 bg-[#10b981] text-white rounded-full flex items-center justify-center"><i class="fas fa-plus text-xs"></i></button>
                         </div>
                     </div>
                 </div>`).join('');
             updateCartBadge();
+        }
+
+        function calculateTotal() {
+            let subTotal = products.reduce((sum, p) => sum + (p.price * p.qty), 0);
+            let discount = 0;
+            promotionList.forEach(promo => {
+                if (promo.status === "เปิด") {
+                    const item = products.find(p => p.name === promo.productName);
+                    if (item && item.qty >= promo.minQty) {
+                        let sets = Math.floor(item.qty / promo.minQty);
+                        discount += (sets * promo.minQty * item.price) - (sets * promo.specialPrice);
+                    }
+                }
+            });
+            return { final: subTotal - discount, discount: discount };
         }
 
         function updateQty(id, change) {
@@ -236,102 +221,108 @@
             if(!document.getElementById('cartModal').classList.contains('hidden')) renderCartItems();
         }
 
+        function updateCartBadge() {
+            const total = products.reduce((sum, p) => sum + p.qty, 0);
+            document.getElementById('cartCount').innerText = total;
+            document.getElementById('cartFloatBtn').classList.toggle('hidden', total === 0);
+        }
+
         function renderCartItems() {
             const list = products.filter(p => p.qty > 0);
-            const { final } = calculateTotal();
+            const res = calculateTotal();
             document.getElementById('cartItemsList').innerHTML = list.map(p => `
-                <div class="flex items-center gap-4 bg-white dark:bg-[#333] p-4 rounded-3xl shadow-sm border dark:border-transparent">
+                <div class="flex items-center gap-4 bg-gray-50 dark:bg-[#333] p-4 rounded-3xl border dark:border-[#444]">
                     <img src="${p.img}" class="w-12 h-12 object-cover rounded-xl">
-                    <div class="flex-1">
-                        <p class="text-sm font-bold text-gray-800 dark:text-white truncate">${p.name}</p>
-                        <p class="text-xs text-[#10b981] font-bold">${p.price} ฿</p>
-                    </div>
+                    <div class="flex-1 min-w-0"><p class="text-sm font-bold text-gray-800 dark:text-white truncate">${p.name}</p><p class="text-xs text-gray-400">${p.price} ฿</p></div>
                     <div class="flex items-center gap-3">
-                        <button onclick="updateQty(${p.id}, -1)" class="text-red-400 hover:scale-110 transition-transform"><i class="fas fa-minus-circle text-xl"></i></button>
-                        <span class="font-bold text-gray-700 dark:text-white w-4 text-center">${p.qty}</span>
-                        <button onclick="updateQty(${p.id}, 1)" class="text-green-500 hover:scale-110 transition-transform"><i class="fas fa-plus-circle text-xl"></i></button>
+                        <button onclick="updateQty(${p.id}, -1)" class="text-red-400"><i class="fas fa-minus-circle text-xl"></i></button>
+                        <span class="font-bold text-gray-800 dark:text-white">${p.qty}</span>
+                        <button onclick="updateQty(${p.id}, 1)" class="text-green-500"><i class="fas fa-plus-circle text-xl"></i></button>
                     </div>
-                </div>`).join('') || `
-                <div class="text-center py-10">
-                    <i class="fas fa-shopping-basket text-4xl text-gray-200 dark:text-gray-700 mb-2"></i>
-                    <p class="text-gray-400 dark:text-gray-500 text-sm">ยังไม่มีสินค้าในตะกร้า</p>
-                </div>`;
-            document.getElementById('displayTotal').innerText = `${final} ฿`;
+                </div>`).join('') || '<p class="text-center py-10 text-gray-400">ไม่มีสินค้า</p>';
+            document.getElementById('displayTotal').innerText = `${res.final} ฿`;
+            document.getElementById('discountLabel').innerText = res.discount > 0 ? `ลดแล้ว ${res.discount} ฿` : '';
         }
 
-        function calculateTotal() {
-            let total = products.reduce((sum, p) => sum + (p.price * p.qty), 0);
-            let discount = 0;
-            if (isPromoActive) {
-                const clay = products.find(p => p.name.includes("ดินสอพอง"));
-                if (clay && clay.qty >= 3) discount = Math.floor(clay.qty / 3) * 10;
+        function clearCart() { products.forEach(p => p.qty = 0); renderShop(); renderCartItems(); }
+
+        function renderAdminPromoList() {
+            const listDiv = document.getElementById('displayPromoList');
+            listDiv.innerHTML = promotionList.map(p => `
+                <div class="flex items-center justify-between promo-list-item">
+                    <div><p class="font-bold text-lg">${p.productName}</p><p class="text-sm text-gray-500">ซื้อครบ ${p.minQty} ชิ้น ราคาเหมา ${p.specialPrice} ฿</p></div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold ${p.status === 'เปิด' ? 'text-green-500' : 'text-gray-400'}">${p.status}</span>
+                        <label class="switch">
+                            <input type="checkbox" ${p.status === 'เปิด' ? 'checked' : ''} onchange="togglePromoStatus('${p.productName}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>`).join('') || '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูลโปรโมชั่น</p>';
+        }
+
+        async function togglePromoStatus(name, isChecked) {
+            const status = isChecked ? "เปิด" : "ปิด";
+            showLoading(true);
+            try {
+                const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'updatePromoStatus', productName: name, status: status }) });
+                if((await resp.json()).success) {
+                    const p = promotionList.find(x => x.productName === name);
+                    if(p) p.status = status;
+                    renderAdminPromoList();
+                }
+            } catch (e) { alert("เกิดข้อผิดพลาด"); }
+            showLoading(false);
+        }
+
+        // --- แก้ไขส่วนการตรวจสอบสิทธิ์ให้แม่นยำขึ้น ---
+        function openAdminSettings() {
+            if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'เจ้าของ')) { 
+                toggleView('admin'); 
+                renderAdminPromoList(); 
+            } else { 
+                alert(`สิทธิ์การใช้งานของคุณคือ: ${currentUser?.role || 'ไม่ระบุ'} (เฉพาะ Admin เท่านั้น)`); 
             }
-            return { final: total - discount };
-        }
-
-        async function finishOrder() {
-            showLoading(true);
-            const { final } = calculateTotal();
-            const orderData = {
-                action: 'checkout',
-                totalPrice: final,
-                payType: document.querySelector('input[name="payType"]:checked').value,
-                seller: currentUser.name,
-                cart: products.filter(p => p.qty > 0)
-            };
-            try {
-                const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(orderData) });
-                if((await resp.json()).success) { closeCart(); await initApp(); }
-            } catch (e) { alert("เกิดข้อผิดพลาดในการบันทึก"); }
-            showLoading(false);
-        }
-
-        function goToCheckout() {
-            const { final } = calculateTotal();
-            if(final <= 0) return;
-            const type = document.querySelector('input[name="payType"]:checked').value;
-            if(type === 'สแกนจ่าย') {
-                document.getElementById('cartSummarySection').classList.add('hidden');
-                document.getElementById('qrCheckoutSection').classList.remove('hidden');
-                document.getElementById('qrFinalTotal').innerText = `${final} ฿`;
-                const img = document.getElementById('qrDisplayImg');
-                img.src = `https://promptpay.io/${PP_ID}/${final}.png`;
-                img.onload = () => { img.classList.remove('hidden'); document.getElementById('qrLoader').classList.add('hidden'); };
-            } else { finishOrder(); }
-        }
-
-        async function handleLogin() {
-            const pin = document.getElementById('loginPin').value;
-            if(!pin) return;
-            showLoading(true);
-            try {
-                const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'login', pin: pin }) });
-                const result = await resp.json();
-                if (result.success) {
-                    localStorage.setItem('pos_user', JSON.stringify({ name: result.name, role: result.role }));
-                    location.reload();
-                } else { alert("PIN ไม่ถูกต้อง"); }
-            } catch (e) { alert("ล้มเหลว"); }
-            showLoading(false);
-        }
-
-        async function refreshStockData(btn) {
-            btn.classList.add('spin-animation');
-            await initApp();
-            btn.classList.remove('spin-animation');
         }
 
         function openCart() { document.getElementById('cartModal').classList.remove('hidden'); renderCartItems(); }
         function closeCart() { document.getElementById('cartModal').classList.add('hidden'); backToCartSummary(); }
         function backToCartSummary() { document.getElementById('qrCheckoutSection').classList.add('hidden'); document.getElementById('cartSummarySection').classList.remove('hidden'); }
-        function updateCartBadge() { const t = products.reduce((s,p)=>s+p.qty,0); document.getElementById('cartCount').innerText=t; document.getElementById('cartFloatBtn').classList.toggle('hidden',t===0); }
-        function showLoading(s) { document.getElementById('loader').classList.toggle('hidden',!s); }
-        function toggleView(v) { document.getElementById('shopView').classList.toggle('hidden',v!=='shop'); document.getElementById('adminSettingsView').classList.toggle('hidden',v!=='admin'); }
-        function openAdminSettings() { toggleView('admin'); }
-        function updatePromoState() { isPromoActive = document.getElementById('promoToggle').checked; localStorage.setItem('promo_clay', isPromoActive); }
-        function clearCart() { products.forEach(p=>p.qty=0); renderShop(); closeCart(); }
-        function handleLogout() { localStorage.removeItem('pos_user'); location.reload(); }
+        
+        async function finishOrder() {
+            showLoading(true);
+            const res = calculateTotal();
+            const orderData = { action: 'checkout', totalPrice: res.final, payType: document.querySelector('input[name="payType"]:checked').value, seller: currentUser.name, cart: products.filter(p => p.qty > 0) };
+            try {
+                const resp = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(orderData) });
+                if((await resp.json()).success) { clearCart(); closeCart(); await initApp(); }
+            } catch (e) { alert("เกิดข้อผิดพลาด"); }
+            showLoading(false);
+        }
 
+        function goToCheckout() {
+            const res = calculateTotal();
+            if(res.final <= 0) return;
+            if(document.querySelector('input[name="payType"]:checked').value === 'สแกนจ่าย') {
+                document.getElementById('cartSummarySection').classList.add('hidden');
+                document.getElementById('qrCheckoutSection').classList.remove('hidden');
+                document.getElementById('qrFinalTotal').innerText = `${res.final} ฿`;
+                document.getElementById('qrDisplayImg').src = `https://promptpay.io/${PROMPTPAY_ID}/${res.final}.png`;
+            } else finishOrder();
+        }
+
+        function toggleView(v) {
+            document.getElementById('shopView').classList.toggle('hidden', v !== 'shop');
+            document.getElementById('adminSettingsView').classList.toggle('hidden', v !== 'admin');
+        }
+
+        function handleLogout() { localStorage.removeItem('pos_user'); location.reload(); }
+        function showLoading(s) { document.getElementById('loader').classList.toggle('hidden', !s); }
+        function toggleDarkMode() { 
+            const isDark = document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode', !isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
         initApp();
     </script>
 </body>
