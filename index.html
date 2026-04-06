@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POS By Frame</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1162/1162456.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -145,6 +151,15 @@
         const PROMPTPAY_ID = "0953456962";
         let products = [], promotionList = [], currentUser = null;
 
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('SW Registered'))
+                    .catch(err => console.log('SW Reg Failed', err));
+            });
+        }
+
         async function initApp() {
             showLoading(true);
             const savedUser = localStorage.getItem('pos_user');
@@ -275,13 +290,12 @@
             showLoading(false);
         }
 
-        // --- แก้ไขส่วนการตรวจสอบสิทธิ์ให้แม่นยำขึ้น ---
         function openAdminSettings() {
             if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'เจ้าของ')) { 
                 toggleView('admin'); 
                 renderAdminPromoList(); 
             } else { 
-                alert(`สิทธิ์การใช้งานของคุณคือ: ${currentUser?.role || 'ไม่ระบุ'} (เฉพาะ Admin เท่านั้น)`); 
+                alert(`สิทธิ์ของคุณคือ: ${currentUser?.role || 'ไม่ระบุ'} (เฉพาะ Admin เท่านั้น)`); 
             }
         }
 
